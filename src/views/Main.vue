@@ -64,12 +64,22 @@
                         <label for="">Apellidos</label>
                         <b-form-input type="text" size="sm"  v-model="apellidos"></b-form-input>
                     </b-col>
-                    <b-col sm="12" class="mt-3">
+                    <b-col v-if="foto_cargada == false" sm="12" class="mt-3">
                         <label for="">Foto</label>
                             <div class="area-foto"  @dragenter.prevent.stop="dragStart" @dragleave="dragEnd" @dragover.prevent @drop="dragFile">
                                 Arrastra la foto aquí
                             </div>
-                    </b-col>        
+                    </b-col>
+                    <b-col v-if="foto_cargada" sm="6" class="mt-3">
+                        <div class="foto_vista_previa">
+                            <img :src="fb64" alt="" class="img_vista_previa">
+                        </div>
+                    </b-col>
+                    <b-col v-if="foto_cargada" sm="6" class="mt-3">
+                        <div class="contenedor_botonera">
+                            <b-button type="button" variant="danger" size="sm" @click="cambiar_foto">Cambiar</b-button>
+                        </div>
+                    </b-col>
                     <b-col sm="12" class="mt-3 d-flex flex-row-reverse">
                         <b-button type="submit" variant="outline-success" size="sm">Guardar</b-button>
                     </b-col>
@@ -80,6 +90,9 @@
 </template>
 
 <script>
+
+import { ipcRenderer } from 'electron'
+
 export default {
     name: 'Main',
     data() {
@@ -89,18 +102,31 @@ export default {
             region: '',
             cargo: '',
             nombres: '',
-            apellidos: ''
+            apellidos: '',
+            foto_cargada: false,
+            fb64: ''
         }
     },
     methods: {
         async dragFile(e){
             console.log(e.dataTransfer.files)
+
+            let ruta = e.dataTransfer.files[0].path
+            let r = await ipcRenderer.invoke('fotob64', ruta)
+            this.fb64 = r
+
+            this.foto_cargada = true
+
         },
         dragStart(event) {
             event.target.classList.add("dragging");
         },
         dragEnd(event) {
             event.target.classList.remove("dragging");
+        },
+        cambiar_foto(){
+            this.foto_cargada = false
+            this.fb64 = ''
         }
     },
 }
@@ -142,4 +168,22 @@ export default {
                 .dragging {
                     opacity: 0.5;
                 }
+
+        .foto_vista_previa{
+            width: 200px;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .img_vista_previa{
+            width: 100%;
+        }
+
+        .contenedor_botonera{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 </style>

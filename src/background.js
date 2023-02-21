@@ -4,6 +4,7 @@ import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const base64Img = require('base64-img')
 
 let win
 let actualizacion
@@ -70,6 +71,22 @@ app.on('ready', async () => {
   }
   createWindow()
 })
+
+
+ipcMain.handle('fotob64', async(event, args) =>{
+
+  // const imageBuffer = fs.readFileSync(args)
+
+  // const base64Image = Buffer.from(imageBuffer).toString('base64')
+
+  // console.log(base64Image)
+
+  const base64Image = base64Img.base64Sync(args)
+  return base64Image
+
+})
+
+
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
