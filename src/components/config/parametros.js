@@ -1,6 +1,6 @@
 module.exports = {
     TE: '10h',
-    IP: '172.16.10.195',
+    IP: 'localhost',
     PUBLIC_IP: '172.16.10.195',
     PUERTO: process.env.NODE_ENV == 'development' ? 5555 : 7171,
     //PUERTO: 7171, 
