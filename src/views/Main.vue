@@ -97,6 +97,7 @@ import { ipcRenderer } from 'electron'
 import axios from 'axios'
 import moment from 'moment'
 import { minix } from '../components/functions/alertas'
+import { IP } from '../components/config/parametros'
 
 export default {
     name: 'Main',
@@ -148,7 +149,7 @@ export default {
                 }
             }
 
-            let r = await axios.post('http://localhost:1337/api/registros', f)
+            let r = await axios.post(`http://${IP}:1337/api/registros`, f)
 
             if (r.status == 200) {
                 minix({icon: 'success', mensaje: 'GUARDADO CON EXITO', tiempo: 3000})
