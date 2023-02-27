@@ -87,7 +87,12 @@
                     </b-row>
                 </form>
             </b-container>
+            <div class="boton_lista" @click="cambiar_ruta">
+                <i class="fas fa-list"></i>
+            </div>
         </div>
+
+
     </div>
 </template>
 
@@ -132,6 +137,9 @@ export default {
         cambiar_foto(){
             this.foto_cargada = false
             this.fb64 = ''
+        },
+        cambiar_ruta(){
+            this.$router.replace('lista')
         },
         async guardar(){
             let f = {
@@ -225,4 +233,26 @@ export default {
             justify-content: center;
             align-items: center;
         }
+
+            .boton_lista{
+                width: 45px;
+                height: 45px;
+                position: fixed;
+                bottom: 30px;
+                right: 15px;
+                border-radius: 50%;
+                z-index: 1200;
+                background-color: #172b48;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                user-select: none;
+                cursor: pointer;
+                color: white;
+                transition: .4s ease;
+            }
+
+            .boton_lista:hover{
+                background-color: #545e71;
+            }
 </style>
