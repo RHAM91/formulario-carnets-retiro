@@ -23,13 +23,16 @@
                             </div>
                             <div class="fila_datos_pastor">
                                 <div class="nombre_">
-                                    PEDRO RISSO                          
+                                    {{item.attributes.nombres}} {{ item.attributes.apellidos }}
                                 </div>
                                 <div class="seccion_">
-                                    IGLESIA XXXXXX
+                                    {{item.attributes.pais }}
                                 </div>
                                 <div class="seccion_">
-                                    GUATEMALA                       
+                                    {{item.attributes.ciudad}}          
+                                </div>
+                                <div class="seccion_">
+                                    {{item.attributes.cargo}}
                                 </div>
                             </div>
                             <div class="botones__">
@@ -110,6 +113,7 @@ export default {
         cerrar_actualizar(){
             
             this.modal = false
+            this.cargar_datos()
         },
         ...mapMutations(['set_objeto'])
 
