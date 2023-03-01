@@ -93,6 +93,8 @@
         </div>
 
 
+        <Login v-if="llave.length == 0" />
+
     </div>
 </template>
 
@@ -104,8 +106,17 @@ import moment from 'moment'
 import { minix } from '../components/functions/alertas'
 import { IP } from '../components/config/parametros'
 
+import Login from '../components/Login.vue'
+import { mapState } from 'vuex'
+
 export default {
     name: 'Main',
+    computed: {
+        ...mapState(['llave'])
+    },
+    components:{
+        Login
+    },
     data() {
         return {
             pais: '',
@@ -241,7 +252,7 @@ export default {
                 bottom: 30px;
                 right: 15px;
                 border-radius: 50%;
-                z-index: 1200;
+                z-index: 1001;
                 background-color: #172b48;
                 display: flex;
                 justify-content: center;
