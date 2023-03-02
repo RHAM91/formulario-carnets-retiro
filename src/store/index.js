@@ -22,6 +22,19 @@ export default new Vuex.Store({
     campo_token: false
   },
   getters: {
+    stf: state =>{
+      let token_formateado ={
+        headers:{
+          Authorization: `Bearer ${state.llave}`
+        }
+      }
+
+      return token_formateado
+    },
+    stfc: state =>{
+      let acortado = state.llave.substring(0,8)
+      return acortado
+    }
   },
   mutations: {
     set_objeto(state, data){

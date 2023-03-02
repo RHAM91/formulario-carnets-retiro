@@ -70,10 +70,13 @@ import { IP } from '../components/config/parametros'
 import { minix, pregunta } from '@/components/functions/alertas'
 
 import Edicion from './EditarModal.vue'
-import { mapMutations } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
     name: 'Lista',
+    computed: {
+        ...mapGetters(['stf', 'stfc'])
+    },
     components:{
         Edicion
     },
@@ -89,18 +92,43 @@ export default {
             this.$router.replace('main')
         },
         async cargar_datos(){
-            let r = await axios.get(`http://${IP}:1337/api/registros`)
-            this.datos = r.data.data
+
+            try {
+                let r = await axios.get(`http://${IP}:1337/api/registros?filters[token_sesion][$eq]=${this.stfc}`, this.stf)
+                this.datos = r.data.data
+                
+            } catch (error) {
+
+                if (error.response.status == 403) {
+                    minix({icon: 'error', mensaje: 'NO TIENES PERMISOS', tiempo: 3000})
+                }else{
+                    minix({icon: 'info', mensaje: error.message, tiempo: 3000})
+                }
+
+            }
+
         },
         async eliminar(id){
 
             pregunta({titulo: 'Seguro que deseas borrar?', texto: 'Esta acción no se puede revertir', afirmacion: 'Si, borrarlo!'}, async (i) =>{
         
                 if (i) {
+
+
+                    try {
+                        await axios.delete(`http://${IP}:1337/api/registros/${id}`, this.stf)
+                        minix({icon: 'success', mensaje: 'BORRADO :)', tiempo: 3000})
+                        this.cargar_datos()
+                        
+                    } catch (error) {
+
+                        if (error.response.status == 403) {
+                            minix({icon: 'error', mensaje: 'NO TIENES PERMISOS', tiempo: 3000})
+                        }else{
+                            minix({icon: 'info', mensaje: error.message, tiempo: 3000})
+                        }
+                    }
                 
-                    await axios.delete(`http://${IP}:1337/api/registros/${id}`)
-                    minix({icon: 'success', mensaje: 'BORRADO :)', tiempo: 3000})
-                    this.cargar_datos()
                 }
             })
             

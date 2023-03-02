@@ -98,7 +98,7 @@
 import { ipcRenderer } from 'electron'
 import axios from 'axios'
 import moment from 'moment'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { minix } from '../components/functions/alertas'
 import { IP } from '../components/config/parametros'
 
@@ -106,7 +106,8 @@ import { IP } from '../components/config/parametros'
 export default {
     name: 'Edicion',
     computed: {
-        ...mapState(['objeto'])
+        ...mapState(['objeto']),
+        ...mapGetters(['stf', 'stfc'])
     },
     data() {
         return {
@@ -145,30 +146,44 @@ export default {
             this.fb64 = ''
         },
         async guardar(){
-            let f = {
-                data: {
-                    nombres: this.nombres.toUpperCase().trim(),
-                    apellidos: this.apellidos.toUpperCase().trim(),
-                    pais: this.pais.toUpperCase(),
-                    ciudad: this.ciudad.toUpperCase().trim(),
-                    region: this.region.trim(),
-                    cargo: this.cargo.toUpperCase(),
-                    retiro_year: moment(Date.now()).format('YYYY'),
-                    foto_b64: this.fb64,
-                    token_sesion: 'wwwwww',
-                    creacion: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+
+            try {
+
+                let f = {
+                    data: {
+                        nombres: this.nombres.toUpperCase().trim(),
+                        apellidos: this.apellidos.toUpperCase().trim(),
+                        pais: this.pais.toUpperCase(),
+                        ciudad: this.ciudad.toUpperCase().trim(),
+                        region: this.region.trim(),
+                        cargo: this.cargo.toUpperCase(),
+                        retiro_year: moment(Date.now()).format('YYYY'),
+                        foto_b64: this.fb64,
+                        token_sesion: this.stfc,
+                        creacion: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+                    }
+                }
+
+                let r = await axios.put(`http://${IP}:1337/api/registros/${this.id_}`, f, this.stf)
+
+                if (r.status == 200) {
+                    minix({icon: 'success', mensaje: 'ACTUALIZADO CON EXITO', tiempo: 3000})
+                    this.salir()
+                }else{
+
+                    minix({icon: 'error', mensaje: 'ALGO SALIÓ MAL', tiempo: 3000})
+                }
+
+
+            } catch (error) {
+                if (error.response.status == 403) {
+                    minix({icon: 'error', mensaje: 'NO TIENES PERMISOS', tiempo: 3000})
+                }else{
+                    minix({icon: 'info', mensaje: error.message, tiempo: 3000})
                 }
             }
 
-            let r = await axios.put(`http://${IP}:1337/api/registros/${this.id_}`, f)
-
-            if (r.status == 200) {
-                minix({icon: 'success', mensaje: 'ACTUALIZADO CON EXITO', tiempo: 3000})
-                this.salir()
-            }else{
-
-                minix({icon: 'error', mensaje: 'ALGO SALIÓ MAL', tiempo: 3000})
-            }
+            
         }
     },
     mounted() {

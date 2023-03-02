@@ -75,7 +75,7 @@ export default {
                 }
             }
 
-            await axios.post(`http://${IP}:1337/api/clientes`, f)
+            await axios.post(`http://${IP}:1337/api/savemod`, f)
             this.set_datos_usuario(f.data)
 
             this.nombre = ''
