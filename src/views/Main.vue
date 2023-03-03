@@ -93,6 +93,7 @@
             </div>
         </div>
 
+        <Actualizar />
 
         <Login v-if="llave.length == 0" />
 
@@ -108,6 +109,7 @@ import { minix } from '../components/functions/alertas'
 import { IP } from '../components/config/parametros'
 
 import Login from '../components/Login.vue'
+import Actualizar from '../components/Actualizar.vue'
 import { mapGetters, mapState } from 'vuex'
 
 export default {
@@ -117,7 +119,8 @@ export default {
         ...mapGetters(['stf', 'stfc'])
     },
     components:{
-        Login
+        Login,
+        Actualizar
     },
     data() {
         return {

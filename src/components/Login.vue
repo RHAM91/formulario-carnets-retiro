@@ -193,7 +193,7 @@ export default {
             border-radius: 50%;
             border: 4px solid #a11692;
             position: fixed;
-            top: 415px;
+            top: 415px; 
             left: 420px;
         }
 
