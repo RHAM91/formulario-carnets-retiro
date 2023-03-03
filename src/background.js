@@ -33,7 +33,7 @@ function buscarActualizacion(){
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 1240,
+    width: 600, //1240
     height: 780,
     center: true,
     autoHideMenuBar: true,
@@ -56,7 +56,7 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
 
-  actualizacion = setInterval(buscarActualizacion, 10 * 60 * 1000) // para cambiar el tiempo del intervalo en minutos, modificar solo el primer 60
+  actualizacion = setInterval(buscarActualizacion, 2 * 60 * 1000) // para cambiar el tiempo del intervalo en minutos, modificar solo el primer 60
 }
 
 // Quit when all windows are closed.
