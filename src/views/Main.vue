@@ -207,7 +207,9 @@ export default {
         ...mapActions(['obtener_version'])
     },
     mounted() {
-        this.obtener_version()
+        setTimeout(() => {
+            this.obtener_version()
+        }, 2000);
     },
 }
 </script>
