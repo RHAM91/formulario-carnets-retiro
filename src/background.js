@@ -2,6 +2,7 @@
 
 import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+import { autoUpdater } from 'electron-updater'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const base64Img = require('base64-img')
@@ -14,6 +15,20 @@ let actualizacion
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
+
+function buscarActualizacion(){
+  console.log('buscando actualización....')
+  autoUpdater.checkForUpdates()
+  autoUpdater.on('update-downloaded', () => {
+
+    setTimeout(()=>{ // ESPERA 10 SEGUNDOS PARA ENVIAR EL MENSAJE DE QUE DEBE SER ACTUALIZADA LA APP
+      win.webContents.send('actualizacion_disponible', true)
+    }, 10000)
+
+    clearInterval(actualizacion) // al momento de descargar la actualizacion detiene el ciclo de busqueda
+
+  })
+}
 
 async function createWindow() {
   // Create the browser window.
@@ -40,6 +55,8 @@ async function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
+
+  actualizacion = setInterval(buscarActualizacion, 2 * 60 * 1000) // para cambiar el tiempo del intervalo en minutos, modificar solo el primer 60
 }
 
 // Quit when all windows are closed.
@@ -75,18 +92,23 @@ app.on('ready', async () => {
 
 ipcMain.handle('fotob64', async(event, args) =>{
 
-  // const imageBuffer = fs.readFileSync(args)
-
-  // const base64Image = Buffer.from(imageBuffer).toString('base64')
-
-  // console.log(base64Image)
-
   const base64Image = base64Img.base64Sync(args)
   return base64Image
 
 })
 
+// INSTALAR ACTUALIZACION
 
+ipcMain.on('instalar_actualizacion', (event, args)=>{
+  autoUpdater.quitAndInstall()
+})
+
+// --> EVENTO PARA BUSCAR Y MOSTRAR ACTUALIZACION
+
+ipcMain.on('get/version', (event, args) =>{
+  event.sender.send('version_app', {version: app.getVersion()})
+  buscarActualizacion()
+})
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {

@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
     name: 'Actualizar',
     data() {
@@ -20,8 +21,9 @@ export default {
             document.getElementById('bt_actualizar').innerText = 'ACTUALIZACIÓN DISPONIBLE'
         },
         aplicar_actualizacion(){
-            console.log('aplicando....')
-        }
+            this.push_actualizacion()
+        },
+        ...mapActions(['push_actualizacion'])
     },
 }
 </script>

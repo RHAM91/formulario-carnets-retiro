@@ -93,7 +93,7 @@
             </div>
         </div>
 
-        <Actualizar />
+        <Actualizar v-if="actualizacion_disponible" />
 
         <Login v-if="llave.length == 0" />
 
@@ -110,12 +110,12 @@ import { IP } from '../components/config/parametros'
 
 import Login from '../components/Login.vue'
 import Actualizar from '../components/Actualizar.vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
     name: 'Main',
     computed: {
-        ...mapState(['llave']),
+        ...mapState(['llave', 'actualizacion_disponible']),
         ...mapGetters(['stf', 'stfc'])
     },
     components:{
@@ -203,7 +203,11 @@ export default {
             }
 
 
-        }
+        },
+        ...mapActions(['obtener_version'])
+    },
+    mounted() {
+        this.obtener_version()
     },
 }
 </script>

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
+import { ipcRenderer } from 'electron'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,9 @@ export default new Vuex.Store({
     objeto: [],
     llave: '',
     datos_usuario: {},
-    campo_token: false
+    campo_token: false,
+    version_app: {},
+    actualizacion_disponible: false
   },
   getters: {
     stf: state =>{
@@ -48,10 +51,29 @@ export default new Vuex.Store({
     },
     set_campo_token(state, data){
       state.campo_token = data
+    },
+    set_version_app(state, data){
+      state.version_app = data
+    },
+    set_actualizacion_disponible(state, data){
+      state.actualizacion_disponible = data
     }
   },
   actions: {
-    
+    obtener_version({commit, state, dispatch}){
+      ipcRenderer.send('get/version')
+      ipcRenderer.on('version_app', (args) =>{
+        ipcRenderer.removeAllListeners('get/version')
+        commit('set_version_app', args)
+      })
+
+      ipcRenderer.on('actualizacion_disponible', (event, message) =>{
+        commit('set_actualizacion_disponible', message)
+      })
+    },
+    push_actualizacion(){
+      ipcRenderer.send('instalar_actualizacion')
+    }
   },
   plugins: [vuexPersist.plugin],
   modules: {
