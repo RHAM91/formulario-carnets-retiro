@@ -207,7 +207,7 @@ export default {
         ...mapActions(['obtener_version'])
     },
     mounted() {
-        this.obtener_version()
+        //this.obtener_version()
     },
 }
 </script>
