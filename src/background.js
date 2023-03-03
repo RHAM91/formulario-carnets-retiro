@@ -2,7 +2,7 @@
 
 import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-//import { autoUpdater } from 'electron-updater'
+import { autoUpdater } from 'electron-updater'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const base64Img = require('base64-img')
@@ -99,16 +99,16 @@ ipcMain.handle('fotob64', async(event, args) =>{
 
 // INSTALAR ACTUALIZACION
 
-// ipcMain.on('instalar_actualizacion', (event, args)=>{
-//   autoUpdater.quitAndInstall()
-// })
+ipcMain.on('instalar_actualizacion', (event, args)=>{
+  autoUpdater.quitAndInstall()
+})
 
-// // --> EVENTO PARA BUSCAR Y MOSTRAR ACTUALIZACION
+// --> EVENTO PARA BUSCAR Y MOSTRAR ACTUALIZACION
 
-// ipcMain.on('get/version', (event, args) =>{
-//   event.sender.send('version_app', {version: app.getVersion()})
-//   buscarActualizacion()
-// })
+ipcMain.on('get/version', (event, args) =>{
+  event.sender.send('version_app', {version: app.getVersion()})
+  buscarActualizacion()
+})
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
